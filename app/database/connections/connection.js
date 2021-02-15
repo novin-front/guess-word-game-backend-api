@@ -2,11 +2,13 @@ const myscql = require('mysql2/promise');
 
 const connection = async () => {
     const db = await myscql.createConnection({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWROD,
-        database: process.env.DB_NAME,
+        host: "arthur.iran.liara.ir",
+        port:32928,
+        user: "root",
+        password: "E2SvCLeFr5J2xgWu5oF0HcmQ",
+        database:"youthful_greider",
     })
     return db;
+    
 }
 module.exports = connection;

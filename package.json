@@ -2,25 +2,31 @@
   "name": "rest_api",
   "version": "1.0.0",
   "description": "resfull_api",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@liara/cli": "^2.7.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "crypto-hash": "^1.2.2",
     "crypto-js": "^3.1.9-1",
-    "dotenv": "^8.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "ghasedak": "0.0.2",
     "jsonwebtoken": "^8.5.1",
-    "mysql2": "^1.6.5",
-    "random-hash": "^4.0.1"
+    "mongodb": "^3.6.4",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
+    "node-url-shortener": "^1.1.11",
+    "random-hash": "^4.0.1",
+    "time-stamp": "^2.2.0"
   },
   "devDependencies": {
-    "faker": "^4.1.0",
-    "nodemon": "^1.19.1"
+    "faker": "^4.1.0"
   }
 }

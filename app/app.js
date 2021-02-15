@@ -5,9 +5,10 @@ require('./middlewares/middlewares')(app);
 require('./router')(app);
 require('./middlewares/404')(app);
 
+
 const runapplication = () => {
-    app.listen(process.env.APP_PORT, () => {
-        console.log(`app is running on port ${process.env.APP_PORT}`)
+    app.listen(1900, () => {
+        console.log(`app is running on port 1900`)
     })
 }
 module.exports = runapplication;
