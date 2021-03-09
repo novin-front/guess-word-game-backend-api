@@ -3,10 +3,12 @@ const {
     sqlDatetime,
     generatRandomNumber
 
-} = require("../../middlewares/functions")
+} = require("../../middlewares/functions");
+let db = connection();
+
 exports.creatGameRow = async (gameData) => {
 
-    const db = await connection();
+    db = await connection();
     let id = gameData.userId;
     const alldata = {
         full_name: gameData.userFullName,
@@ -37,8 +39,7 @@ exports.creatGameRow = async (gameData) => {
     }
 }
 exports.creatDearRow = async (data) => {
-
-    const db = await connection();
+    db = await connection();
     let id = data.userId;
     const alldata = {
         full_name_sender: data.nameSender,
@@ -67,50 +68,41 @@ exports.creatDearRow = async (data) => {
     }
 }
 exports.saveDearSmsStatus = async (userId, status, smsId,jsonSms) => {
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `dear_data` SET `sms_status`=?,`sms_id`=?,`sms_response_json`=? WHERE dear_id=? LIMIT 1", [status, smsId,jsonSms, userId]);
     return results.affectedRows > 0;
 }
 exports.getAllGameRowData = async () => {
-    const db = await connection();
     let [results, fields] = await db.query("SELECT * FROM `guessـwords`");
     return results
 }
 exports.getUserDataByID = async (userId) => {
-    const db = await connection();
     let [results, fields] = await db.query("SELECT * FROM `guessـwords` WHERE user_id=? LIMIT 1", [userId]);
     return results
 }
 exports.saveShortLink = async (userId, shortLink) => {
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `guessـwords` SET `short_link`=? WHERE user_id=? LIMIT 1", [shortLink, userId]);
     return results.affectedRows > 0;
 }
 exports.saveSmsStatus = async (userId, status, smsId,jsonSms) => {
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `guessـwords` SET `sms_status`=?,`sms_id`=?,`sms_response_json`=? WHERE user_id=? LIMIT 1", [status, smsId,jsonSms, userId]);
     return results.affectedRows > 0;
 }
 exports.saveEndSmsStatus = async (userId, status, smsId,jsonSms) => {
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `guessـwords` SET `end_sms_status`=?,`end_sms_id`=?,`end_sms_response_json`=? WHERE mobile=? LIMIT 1", [status, smsId,jsonSms, userId]);
     return results.affectedRows > 0;
 }
 exports.saveFamStatue = async (userId, status) => {
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `guessـwords` SET `fam_api_flag`=? WHERE user_id=? LIMIT 1", [status, userId]);
     return results.affectedRows > 0;
 }
 exports.updateGames = async (dataUpdate) => {
 
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `form_builder` SET `title`=?,`user_id`=?,`form_input`=? WHERE id=? LIMIT 1", [dataUpdate.title, dataUpdate.userId, dataUpdate.formdata, dataUpdate.id]);
     return results.affectedRows > 0;
 
 }
 exports.updateGames = async (dataUpdate) => {
 
-    const db = await connection();
     let [results, fields] = await db.query("UPDATE `form_builder` SET `title`=?,`user_id`=?,`form_input`=? WHERE id=? LIMIT 1", [dataUpdate.title, dataUpdate.userId, dataUpdate.formdata, dataUpdate.id]);
     return results.affectedRows > 0;
 

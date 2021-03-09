@@ -13,8 +13,10 @@ const {
     createSha256Hash,
     genarateChecksum,
     generatRandomNumber,
+    faNumberConvertToEn,
     IsValidPhoneNumber,
     IsValidFullName,
+    IsValidPoint,
 
 } = require("../../middlewares/functions");
 const { generatCustomMessage } = require('./generatCustomMessage');
@@ -46,7 +48,7 @@ exports.create = async (req, res) => {
     let message ='برای شرکت در قرعه‌کشی جایزه 50 میلیونی جشنواره "قدردانم" و دهها جایزه دیگر، کافی است اپلیکیشن فام رو نصب کنید.\n تراکنش بیشتر = شانس بیشتر';
     message += "\n لینک دانلود : \n" + "yun.ir/gamefication-fam";
     
-    let mobileNumber = mobile;
+    let mobileNumber = faNumberConvertToEn(mobile);
     let userFullName = fullName;
     let point = gameRate;
     var timestamp = Number(new Date());
@@ -61,9 +63,8 @@ exports.create = async (req, res) => {
         point,
         userId: generatRandomNumber(1000000)
     }
-    if (IsValidPhoneNumber(mobileNumber) && IsValidFullName(userFullName)) {
+    if (IsValidPhoneNumber(mobileNumber) && IsValidFullName(userFullName) && IsValidPoint(point)) {
         if (IsValidPhoneNumber(mobileNumber)) {
-
             // https://famepay.ir:6966/api/v1.0/levelPoint/
             try {
                 const saveUserDataId = await gameModel.creatGameRow(dbData);
@@ -93,6 +94,7 @@ exports.create = async (req, res) => {
                 }
                 
             } catch (error) {
+                console.log(error);
                 res.status(400).send({
                     success: true,
                     error,
@@ -113,6 +115,11 @@ exports.create = async (req, res) => {
                 messages: ErrorMessages,
             });
         }
+    }else{
+        res.status(400).send({
+            success: true,
+            message: "خطا در داده های ارسالی",
+        });
     }
 };
 

@@ -1,5 +1,7 @@
 const crypto = require("crypto");
-
+function convertArrayToString(array) {
+    return array.join(",").replace(/,/g, "");
+}
 exports.enNumberConvertToFa = (phonnumber) => {
     let mobilearray = phonnumber.split(''); // empty string separator
 
@@ -54,7 +56,46 @@ exports.IsValidPhoneNumber = (value)=> {
 }
 
 exports.IsValidFullName = (value)=> {
-    return /^[a-zA-Z پچجحخهعغفقثصضشسیبلاتنمکگوئدذرزطظژؤإأءًٌٍَُِّ\s]+$/g.test(
-        value
-    );
+    if(value.length < 40){
+        return true;
+    }
+    return false;
+    // return /^[a-zA-Z پچجحخهعغفقثصضشسیبلاتنمکگوئدذرزطظژؤإأءًٌٍَُِّ\s]+$/g.test(
+    //     value
+    // );
+}
+exports.IsValidPoint = (point)=>{
+    if(typeof(point)  === "number"){
+        if(point <= 60 && point >= 0){
+            return true;
+        }else{
+            return false
+        }
+    }else{
+        return false
+    }
+}
+exports.faNumberConvertToEn = (phonnumber) => {
+    let mobilearray = phonnumber.split(''); // empty string separator
+    let number_P_E = {
+        '۰': 0,
+        '۱': 1,
+        '۲': 2,
+        '۳': 3,
+        '۴': 4,
+        '۵': 5,
+        '۶': 6,
+        '۷': 7,
+        '۸': 8,
+        '۹': 9
+    };
+    let EnArrayNumber = []
+    mobilearray.map((number) => {
+        if (number_P_E[number] !== undefined) {
+            EnArrayNumber.push(number_P_E[number])
+        } else {
+            EnArrayNumber.push(number)
+        }
+    });
+    return convertArrayToString(EnArrayNumber)
 }
