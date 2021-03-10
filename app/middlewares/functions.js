@@ -2,7 +2,10 @@ const crypto = require("crypto");
 function convertArrayToString(array) {
     return array.join(",").replace(/,/g, "");
 }
-exports.enNumberConvertToFa = (phonnumber) => {
+const enNumberConvertToFa = (phonnumber) => {
+    if(phonnumber === ""){
+        return;
+    }
     let mobilearray = phonnumber.split(''); // empty string separator
 
     let number_P_E = {
@@ -19,18 +22,18 @@ exports.enNumberConvertToFa = (phonnumber) => {
     };
     return String(phonnumber).split('').map(number => number_P_E[number] ? number_P_E[number] : number).join('');
 }
-exports.sqlDatetime = () => {
+const sqlDatetime = () => {
     return new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60 * 1000).toJSON().slice(0, 19).replace('T', ' ');
 }
-exports.createSha256Hash = (key) => {
-    const hash = crypto.createHash("sha256").update(key).digest("hex");
-    return hash;
-}
+// const createSha256Hash = (key) => {
+//     const hash = crypto.createHash("sha256").update(key).digest("hex");
+//     return hash;
+// }
 const createSha256Hash = (key) => {
     const hash = crypto.createHash("sha256").update(key).digest("hex");
     return hash;
 }
-exports.genarateChecksum = (phoneNumber, time, point) => {
+const genarateChecksum = (phoneNumber, time, point) => {
     const Checksum =
         "hoodad" +
         "!" +
@@ -44,18 +47,21 @@ exports.genarateChecksum = (phoneNumber, time, point) => {
     return createSha256Hash(Checksum);
 }
 
-exports.generatRandomNumber = (end) => {
+const generatRandomNumber = (end) => {
     return Math.floor(Math.random() * end)
 }
 
 
-exports.IsValidPhoneNumber = (value)=> {
+const IsValidPhoneNumber = (value)=> {
     return /(0|\+98)?([ ]|,|-|[()]){0,2}9[0-9]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/g.test(
         value
     );
 }
+const checkPassword =(value)=>{
+    return /^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*).{6,}/g.test(value)
+}
 
-exports.IsValidFullName = (value)=> {
+const IsValidFullName = (value)=> {
     if(value.length < 40){
         return true;
     }
@@ -64,7 +70,7 @@ exports.IsValidFullName = (value)=> {
     //     value
     // );
 }
-exports.IsValidPoint = (point)=>{
+const IsValidPoint = (point)=>{
     if(typeof(point)  === "number"){
         if(point <= 60 && point >= 0){
             return true;
@@ -75,7 +81,10 @@ exports.IsValidPoint = (point)=>{
         return false
     }
 }
-exports.faNumberConvertToEn = (phonnumber) => {
+const faNumberConvertToEn = (phonnumber) => {
+    if(phonnumber === ""){
+        return;
+    }
     let mobilearray = phonnumber.split(''); // empty string separator
     let number_P_E = {
         '۰': 0,
@@ -99,3 +108,121 @@ exports.faNumberConvertToEn = (phonnumber) => {
     });
     return convertArrayToString(EnArrayNumber)
 }
+const validatonRejesterForm = (data)=>{
+    let errorData = {};
+    let notValid =false;
+    if(Object.keys(data).length == 0){
+        return {
+            errorMessage : "خطا در داده های ارسالی",
+            isValid : true,
+        }
+    }
+
+    if(data.firstName === "" &&  data.firstName.length <= 2 ){
+        errorData.firstName = "فیلد نام نمی تواند خالی باشد";
+        notValid = true;
+    }
+    if(data.lastName === "" &&  data.lastName.length <= 2){
+        errorData.lastName = "فیلد نام خانوادگی نمی تواند خالی باشد";
+        notValid = true;
+    }
+    let mobile =faNumberConvertToEn(data.phoneNumber);
+    if(!IsValidPhoneNumber(mobile)){
+        errorData.phoneNumber = "شماره موبایل وارد شده معتبر نیست";
+        notValid = true;
+    }
+    if(data.phoneNumber == ""){
+        errorData.phoneNumber = "فیلد شماره موبایل نمی تواند خالی باشد";
+        notValid = true;
+    }
+    if(data.password.length >= 6){
+        if(!checkPassword(data.password)){
+            errorData.password = "رمز عبور وارد شده اشتباه است";
+            notValid = true;
+        }
+    }else{
+        errorData.password = " رمز عبور کمتر از مقدار 6 کارکتر است";
+    }
+    if(data.password == ""){
+        errorData.password = "فیلد رمز عبور نمی تواند خالی باشد";
+        notValid = true;
+    }
+    if(data.repPassword.length >= 6){
+        if(!checkPassword(data.repPassword)){
+    
+            if(data.repPassword !== data.password){
+                errorData.repPassword = "تکرار رمز عبور با رمز عبور برار نیست";
+                notValid = true;
+            }else{
+                errorData.repPassword = "تکرار رمز عبور اشتباه است";
+                notValid = true;
+            }
+        }
+        
+    }else{
+        errorData.repPassword = "تکرار رمز عبور کمتر از مقدار 6 کارکتر است";
+        notValid = true;
+    }
+    if(data.repPassword == ""){
+        errorData.repPassword = "تکرار رمز عبور نمی تواند خالی باشد";       
+        notValid = true;
+    }
+    return {
+        errorMessage : errorData,
+        isValid : notValid,
+    }   
+}
+const validatonLoginForm = (data)=>{
+    let errorData = {};
+    let notValid =false;
+    if(Object.keys(data).length == 0){
+        return {
+            errorMessage : "خطا در داده های ارسالی",
+            isValid : true,
+        }
+    }
+    let mobile =faNumberConvertToEn(data.phoneNumber);
+    if(!IsValidPhoneNumber(mobile)){
+        errorData.phoneNumber = "شماره موبایل وارد شده معتبر نیست";
+        notValid = true;
+    }
+     if(mobile.length > 12){
+        errorData.phoneNumber = "شماره موبایل وارد شده بیشتر از 11 رقم است";
+        notValid = true;
+    }
+
+    if(data.phoneNumber == ""){
+        errorData.phoneNumber = "فیلد شماره موبایل نمی تواند خالی باشد";
+        notValid = true;
+    }
+    if(data.password.length >= 6){
+        if(!checkPassword(data.password)){
+            errorData.password = "رمز عبور وارد شده اشتباه است";
+            notValid = true;
+        }
+    }else{
+        errorData.password = " رمز عبور کمتر از مقدار 6 کارکتر است";
+        notValid = true;
+    }
+    if(data.password == ""){
+        errorData.password = "فیلد رمز عبور نمی تواند خالی باشد";
+        notValid = true;
+    }
+    return {
+        errorMessage : errorData,
+        isValid : notValid,
+    }
+       
+}
+exports.enNumberConvertToFa = enNumberConvertToFa;
+exports.sqlDatetime = sqlDatetime;
+exports.createSha256Hash = createSha256Hash;
+exports.genarateChecksum  = genarateChecksum;
+exports.generatRandomNumber = generatRandomNumber;
+exports.checkPassword = checkPassword;
+exports.IsValidPhoneNumber = IsValidPhoneNumber;
+exports.IsValidFullName = IsValidFullName;
+exports.IsValidPoint =IsValidPoint;
+exports.faNumberConvertToEn =faNumberConvertToEn;
+exports.validatonRejesterForm = validatonRejesterForm;
+exports.validatonLoginForm = validatonLoginForm;
